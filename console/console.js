@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 
 replLoop(); // Start the read-eval-print-loop
 
@@ -36,14 +36,25 @@ function replLoop()
         WScript.StdOut.Write(">>> ");
         var line = WScript.StdIn.ReadLine();
         var result = undefined;
+        var matchLoad = /load\((.+)\)/.exec(line);
+
         try
         {
-            result = eval(line);
+            if (matchLoad)
+            {
+                content = getContent(eval(matchLoad[1]));
+                result = eval(content);
+            }
+            else
+            {
+                result = eval(line);
+            }
         }
         catch (err)
         {
             WScript.Echo("Error: " + err.description);
         }
+        
         if (result) WScript.Echo(result);
     }
 }
@@ -62,4 +73,17 @@ function inspect(obj)
     {
         WScript.Echo($key + ": " + obj[$key]);
     }
+}
+
+
+// TODO: Move to more appropriate place?
+function getContent(filename)
+{
+    var ForReading = 1;
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    var file = fso.OpenTextFile(filename, ForReading);
+    var content = file.ReadAll();
+
+    file.Close();
+    return content;
 }
