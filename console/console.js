@@ -64,8 +64,8 @@ function replLoop()
  * Inspects the given object, outputting to the standard output a list of
  * it's attributes and values.
  *
- * params:
- *     obj - the object to be inspected
+ * Params:
+ *     obj - the object to be inspected.
  */
 function inspect(obj)
 {
